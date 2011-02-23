@@ -1,0 +1,20 @@
+<?php
+
+/**
+ * Implementation of hook_pre_commit().
+ */
+function drupal_pre_commit() {
+  // Run drush coder command here.
+  // Unfortunately, current state of D6 Coder module is primitive.
+  // Does not support specifying files. Lots of patches in queue though.
+
+  return 0;
+}
+
+/**
+ * Implementation of plugin_php_extension().
+ */
+function drupal_php_exension() {
+  $exts = array('inc', 'test', 'module', 'install', 'engine', 'theme');
+  return cook_array_reflect($exts);
+}

@@ -1,0 +1,53 @@
+<?php
+
+/**
+ * Implementation of hook_pre_commit().
+ *
+ * @see http://phpadvent.org/2008/dont-commit-that-error-by-travis-swicegood
+ */
+function php_pre_commit() {
+  $status = $test = 0;
+  $regex = php_get_extensions(TRUE);
+
+  foreach (staged_files() as $file) {
+    if (!preg_match($regex, $file)) {
+        // Only check PHP files.
+        continue;
+    }
+    if (DEBUG) {
+      print '[DEBUG] Proceeding with PHP syntax checking for ' . $file . "\n";
+    }
+
+    // Now to check PHP sytax.
+    $lint_output = array();
+    exec("php -l " . escapeshellarg($file), $lint_output, $test);
+    if ($test == 0) {
+        continue;
+    }
+    echo implode("\n", $lint_output), "\n";
+    $status = 1;
+  }
+  return $status;
+}
+
+/**
+ * Helper function to identify all PHP file extensions.
+ *
+ * @param $regex
+ *  (default: FALSE) Arrange file extensions as a regular expression.
+ * @param $reset
+ *  (default: FALSE) Recalculate all extensions.
+ *
+ * @return
+ *  Array of file extensions.
+ */
+function php_get_extensions($regex = FALSE, $reset = FALSE) {
+  static $ext;
+  if (empty($ext) || $reset) {
+    $ext['raw'] = array('php' => 'php', 'phps' => 'phps');
+    $ext['raw'] = $ext['raw'] + cook_plugin_invoke_all('php_exension');
+    $ext['regex'] = '/\.(' . implode('|', $ext['raw']) . ')$/S';
+  }
+  return $regex ? $ext['regex'] : $ext['raw']; 
+}
+
