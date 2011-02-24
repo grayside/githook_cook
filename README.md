@@ -18,6 +18,15 @@ repository.
 
     $> ln -s cook/githook_cook.php pre-commit
 
+## Testing Workflows
+githook_cook.php can be run standalone.
+
+    $> ./githook_cook.php test <git-event>
+
+Can be used to run the routines of, say, pre-commit against a directory of mostly empty test files.
+
+This test mode replaces the git.inc library with a test.git.inc library with faked functionality.
+
 ## Future Plans
 1. Have Drupal Coder validation.
 2. Implement some kind of configuration of Cook Plugins. Possibly using 
@@ -25,5 +34,3 @@ Git configuration. Definitely needs to support system defaults and
 local overrides.
 3. Provide some wrapper functions for other common git workflow tasks, 
 such as sending emails, getting other common git data.
-4. Move "wrapper" functions in an api.inc file, and cook helper 
-functions into cook.inc.

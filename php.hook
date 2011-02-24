@@ -9,13 +9,13 @@ function php_pre_commit() {
   $status = $test = 0;
   $regex = php_get_extensions(TRUE);
 
-  foreach (staged_files() as $file) {
+  foreach (git_staged_files() as $file) {
     if (!preg_match($regex, $file)) {
         // Only check PHP files.
         continue;
     }
-    if (DEBUG) {
-      print '[DEBUG] Proceeding with PHP syntax checking for ' . $file . "\n";
+    if (cook_check_context('COOK_DEBUG')) {
+      print "[DEBUG] Proceeding with PHP syntax checking for '$file'.\n";
     }
 
     // Now to check PHP sytax.
